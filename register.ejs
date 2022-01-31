@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <%- include('../partials/heads.ejs'); %>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>GSMS</title>
+  </head>
+	
+	<body>
+    
+       <div class="container" style="width: 70vh;">
+        <div class="card" style="margin:50px; padding: 20px;">
+            <form action="/register" method="POST">
+                <h3>Register</h3>
+                <hr>
+                <div class="form-group">
+                    <label for="username">UserName</label>
+                    <input type="text" id="username" name="username" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" name="phone" id="phone" class="form-control">
+                </div> 
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" class="form-control">
+                </div> <br>
+                <button type="submit" class="btn btn-primary btn-sm">Register</button>
+            </form>
+            <br>
+            <a href="/login">Already Registered, Login Now</a>
+           </div>
+       </div>
+	</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <%- include('../partials/heads.ejs'); %>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>GSMS</title>
+  
+  </head>
+	
+	<body>
+        <%- include('../partials/svgs.ejs'); %>
+        <div class="container-fluid">
+            <div class="row min-vh-100 flex-column flex-md-row">
+              <aside class="col-12 col-md-2 p-0 bg-dark flex-shrink-1">
+                    <div class="d-flex flex-column flex-shrink-0 p-3" style="height: 100vh; background-color: #ffffff;">
+                      <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                        <svg class="bi me-2" width="25" height="25"><use xlink:href="#basket"></use></svg>
+                        <span class="fs-4" style="margin-top: 5px;">GSMS</span>
+                      </a>
+                      <hr style="margin-top: 7px;margin-bottom: 20px;">
+                        <ul class="nav nav-pills flex-column mb-auto  list-group" role="tablist">
+                          <li>
+                            <a href="#" class="nav-link active" data-toggle="list" >
+                              <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                              Dashboard
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#" class="nav-link"  data-toggle="modal" data-target="#newshopModal">
+                              <svg class="bi me-2" width="16" height="16"><use xlink:href="#shop"></use></svg>
+                              Add New Shop
+                            </a>
+                          </li>
+                            <a href="/logout" class="nav-link " >
+                              <svg class="bi me-2" width="16" height="16"><use xlink:href="#log-out"></use></svg>
+                              Logout
+                            </a>
+                          </li>
+                        </ul>
+                        <hr>
+                       
+                      </div>  
+                </aside>
+                <main  class="col bg-faded  flex-grow-1" style="padding:0px; width: 100%;" >
+                    <div class="container" style="background-color: white; ">
+                        <div class="row">
+                          <div class="col">
+                            <h5 id="user-header" style="padding-top: 20px;padding-bottom: 10px;">  Dashboard</h5>
+                          </div>
+                          <div class="col">
+                            <div style=" float: right;">  <button type="button" class="btn  btn-sm" style="margin-top: 15px;" onclick="refresh()"> <svg class="bi " width="20" height="20"><use xlink:href="#refresh"></use></svg></button></div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                                <div id="shopContainer" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5" style="background-color: #ffffff; padding: 10px;margin-top: 10px;">
+                      </div>
+                    </div>
+                </main> 
+            </div>
+        </div>
+
+       
+        <!-- Modal -->
+        <div class="modal fade" id="newshopModal" tabindex="-1" role="dialog" aria-labelledby="newshopModalTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="newshopModalLongTitle">Add New Shop</h5>
+              </div>
+              <div class="modal-body">
+                  <form id="addnewshopForm">
+                    <div class="form-group">
+                        <label for="shopname">Name</label>
+                        <input type="text" id="shopname" name="shopname" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="shopaddress">Address</label>
+                        <input type="text" id="shopaddress" name="shopaddress" class="form-control">
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="shopphone">Contact Number</label>
+                        <input type="number" name="shopphone" id="shopphone" class="form-control" maxlength="10">
+                    </div>
+
+                    
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="addNewShop()">Add Shop</button>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+	</body>
+  <script>
+    var username = capitalizeFirstLetter("<%= user.username %>");
+    var userid = capitalizeFirstLetter("<%= user.userid %>");
+   
+    document.getElementById("user-header").innerHTML =" <svg class='bi me-2' width='20' height='20'><use xlink:href='#speedometer2'></use></svg>"+ username+"'s Dashboard";
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+
+
+    refresh();
+
+    function addNewShop(){
+      var shopname = document.getElementById("shopname").value;
+      var shopaddress = document.getElementById("shopaddress").value;
+      var shopcontact = document.getElementById("shopphone").value;
+      var shopid = Date.now();
+      var _id = shopid;
+      var shopownerid = userid;
+      if(!isEmpty(shopname) && !isEmpty(shopaddress) && !isEmpty(shopcontact)){
+         
+        axios.get('/api/addNewShop', {
+                params: {
+                  _id,
+                  shopid,
+                  shopname,
+                  shopaddress,
+                  shopcontact,
+                  shopownerid
+                }
+          }).then(function (response) {
+
+              console.log(response)
+
+              if(response.status == 200){
+                $('#newshopModal').modal('hide');
+                refresh();
+              }
+            });   
+      }
+    
+    }
+
+    
+    
+    
+    function refresh(){
+      document.getElementById("shopContainer").innerHTML="";
+      axios.get('/api/getShops', {
+              params: { 
+                userid
+                }
+               
+              }).then(function (response) {
+                console.log(response)
+                response.data.forEach((shop, index, array) => {
+                    
+                    var data = "<div class='col mb-4' ><a href='#'><div class='card' id="+shop.shopid+" onclick='callClass(this.id)'><div class='card-body' style='margin:0px;'><div class='row'><div class='col-auto'><h3 class='card-title'>"+shop.shopname+"</h3></div></div><hr style='margin:0px;'><p class='card-text' style='color: #7F8B94; font-size: 14px;'>"+shop.shopaddress+"</p></div> </div></a></div>"
+            
+                    document.getElementById("shopContainer").innerHTML += data;
+                  });
+                }); 
+    }
+
+    function callClass(shopid){
+        console.log(shopid)
+        window.location.assign("/"+shopid+"/shop/");
+    }        
+    function isEmpty(str) {
+      return (!str || str.length === 0 );
+    }
+  </script>
+</html>

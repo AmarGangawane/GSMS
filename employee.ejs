@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <%- include('../partials/heads.ejs'); %>
+ 
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+    <title>GSMS</title>
+  
+  </head>
+	
+	<body>
+        <%- include('../partials/svgs.ejs'); %>
+        <div class="container-fluid">
+            <div class="row min-vh-100 flex-column flex-md-row">
+              <aside class="col-12 col-md-2 p-0 bg-dark flex-shrink-1">
+                <div class="d-flex flex-column flex-shrink-0 p-3" style="height: 100vh; background-color: #ffffff;">
+                  <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                    <svg class="bi me-2" width="25" height="25"><use xlink:href="#basket"></use></svg>
+                    <span class="fs-4" style="margin-top: 5px;">GSMS</span>
+                  </a>
+                  <hr style="margin-top: 7px;margin-bottom: 20px;">
+                  <ul class="nav nav-pills flex-column mb-auto  list-group" role="tablist">
+                    <li>
+                      <a href="#" class="nav-link" data-toggle="list" onclick="window.location.assign('/'+shopid+'/shop/');">
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                        Dashboard
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/bills/');" >
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                       Bills
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link"   data-toggle="list" onclick="window.location.assign('/'+shopid+'/products/');" >
+                          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                          Products
+                        </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link active" data-toggle="list" onclick="window.location.assign('/'+shopid+'/employee/');" >
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                        Employees
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/supplier/');" >
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#supplier"></use></svg>
+                        Suppliers
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link " onclick="window.location.assign('/logout');" >
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#log-out"></use></svg>
+                        Logout
+                      </a>
+                    </li>
+                  </ul>
+                  <hr>
+                </div>  
+              </aside>
+                <main  class="col bg-faded  flex-grow-1" style="padding:0px; width: 100%;" >
+  
+                    <div class="container">
+                      <div class="container" style="padding: 10px;">
+                        <div style="float:right;">  
+                          <div class="row" style="padding: 0%; margin-top: 15px;">
+                              <div class="col">
+                                <button type="button" class="btn btn-sm" onclick="refershEmployees()"> <svg class="bi " width="20" height="20"><use xlink:href="#refresh"></use></svg></button>
+                              </div>
+                          </div>
+                        </div>
+                        <h6 class="mt-3 mb-0" id="greet-msg"> </h6>
+                        <div style="color: #7F8B94;">Here what's happening with your store today.</div>
+                      </div>
+
+                      <div class="container" style="background-color: #ffffff;padding: 10px;">
+                        <button type="button" class="btn btn-primary btn-sm"  data-toggle="modal" data-target="#newemployeeModal" style="margin-top: 5px; margin-bottom: 10px; float: right;">Add New Employee</button>
+                        <div id="employeeContainer" >
+                         
+                          <br> <br>
+                          <div class="container">
+                            <div id="empData" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5" style="background-color: #ffffff; padding: 10px;margin-top: 10px;">
+                          </div>
+                        </div>
+                       
+                      </div>
+                    </div>
+                </main> 
+            </div>
+        </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="newemployeeModal" tabindex="-1" role="dialog" aria-labelledby="newemployeeModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="newemployeeModalLongTitle">Add New Employee</h5>
+            </div>
+            <div class="modal-body" style="margin: 5px;">
+              <form id="addnewemployeeForm">
+                        <div class="form-group">
+                            <label for="empname">Name</label>
+                            <input type="text" id="empname" name="empname" class="form-control">
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <div class="form-group">
+                              <label for="empdesgn">Desgination</label>
+                              <input type="text" id="empdesgn" name="empdesgn" class="form-control">
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="form-group">
+                              <label for="empsalary">Salary</label>
+                              <input type="text" id="empsalary" name="empsalary" class="form-control">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="empaddress">Address</label>
+                          <input type="text" name="empaddress" id="empaddress" class="form-control">
+                        </div>
+                        <div class="form-group">
+                          <label for="empcontact">Contact</label>
+                          <input type="number" name="empcontact" id="empcontact" class="form-control" >
+                        </div>
+                        <div class="form-group">
+                          <label for="empphoto">Photo URL</label>
+                          <input type="text" name="empphoto" id="empphoto"  class="form-control" >
+                        </div>
+                      </form>
+                      <br>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="addNewEmployee()">Add Employee</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div> 
+      
+
+       <!--Edit Modal -->
+       <div class="modal fade" id="editemployeeModal" tabindex="-1" role="dialog" aria-labelledby="editemployeeModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editemployeeModalLongTitle">Edit Employee</h5>
+            </div>
+            <div class="modal-body" style="margin: 5px;">
+              <form id="editemployeeForm">
+                          <div class="form-group">
+                            <label for="eemployeeid">Employee ID</label>
+                            <input type="text" id="eemployeeid" name="eemployeeid" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="eemployeename">Employee Name</label>
+                            <input type="text" id="eemployeename" name="eemployeename" class="form-control">
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <div class="form-group">
+                              <label for="eemployeedesgn">Desgination</label>
+                              <input type="text" id="eemployeedesgn" name="eemployeedesgn" class="form-control">
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="form-group">
+                              <label for="eemployeesalary">Salary</label>
+                              <input type="text" id="eemployeesalary" name="eemployeesalary" class="form-control">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="eemployeeaddress">Address</label>
+                          <input type="text" name="eemployeeaddress" id="eemployeeaddress" class="form-control">
+                        </div>
+                        <div class="form-group">
+                          <label for="eemployeecontact">Contact</label>
+                          <input type="number" name="eemployeecontact" id="eemployeecontact" class="form-control" >
+                        </div>
+                        <div class="form-group">
+                          <label for="eemployeephoto">Photo URL</label>
+                          <input type="text" name="eemployeephoto" id="eemployeephoto"  class="form-control" >
+                        </div>
+                      </form>
+                      <br>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="deleteEmployee()">Remove</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="editEmployee()">Edit Employee</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div> 
+	</body>
+  <script>
+    var username = capitalizeFirstLetter("<%= user.username %>");
+    var shopid ="<%= shopid %>";
+    console.log(shopid);
+    
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    var greet = [
+      'What are you doing that early?',
+      'Good Morning',
+      'Good Afternoon',
+      'Good Evening'
+    ][ parseInt(new Date().getHours() / 24 * 4) ];
+    console.log(greet)
+    document.getElementById("greet-msg").innerHTML = greet+", <b>"+username+"!</b>";
+
+    refershEmployees();
+
+    function addNewEmployee(){
+      var employeeid = Date.now();
+      var employeename = document.getElementById("empname").value;
+      var employeedesgn = document.getElementById("empdesgn").value;
+      var employeesalary = document.getElementById("empsalary").value;
+      var employeeaddress = document.getElementById("empaddress").value;
+      var employeecontact = document.getElementById("empcontact").value;
+      var employeephoto = document.getElementById("empphoto").value;
+
+      if(!isEmpty(employeeid)){
+       
+        var  params={
+                  employeeid,
+                  employeename,
+                  employeedesgn,
+                  employeesalary,
+                  employeeaddress,
+                  employeecontact,
+                  employeephoto,
+                  shopid
+                };
+                console.log(params)
+        axios.get('/api/addNewEmployee/', {
+                params: {
+                  employeeid,
+                  employeename,
+                  employeedesgn,
+                  employeesalary,
+                  employeeaddress,
+                  employeecontact,
+                  employeephoto,
+                  shopid
+                }
+          }).then(function (response) {
+              console.log(response)
+              if(response.status == 200){
+                $('#newemployeeModal').modal('hide');
+              }
+              refershEmployees();
+            }); 
+
+
+      }
+    }
+
+    function refershEmployees(){
+      document.getElementById("empData").innerHTML=" ";
+      axios.get('/api/getEmployees/'+shopid, {
+               
+              }).then(function (response) {
+                
+                response.data.forEach((emp, index, array) => {
+                  
+                     var data = "<div class='col mb-4' ><div class='card' id="+emp.employeeid+" style='width: 200px;height: 300px;'><div id='container' style='position:relative;'><img src="+emp.employeephoto+" style='width: 200px; height: 200px; background-color: #7F8B94;'><svg class='bi me-2' width='16' height='16' style='position: absolute; top: 5px; right:0px;' onclick='displayUser("+emp.employeeid+")'><use xlink:href='#edituser'></use></svg></div><p id='employeename' style='align-self: center; margin: 10px 0px 0px 0px; font-size: 18px;'>"+emp.employeename+"</p><p id='employeedesgn' style='align-self: center; margin: 0px; font-size: 14px; color :#7F8B94;'>"+emp.employeedesgn+"</p><center><p id='employeeaddress' style='align-self: center; margin: 0px; font-size: 12px;'>"+emp.employeeaddress+"</p></center><center><p id='employeecontact' style='align-self: center; margin: 0px; font-size: 12px;'>(+91) "+emp.employeecontact+"</p></center></div></div>";
+                    document.getElementById("empData").innerHTML += data;
+                  });
+                }); 
+      }
+
+    function displayUser(employeeid){
+      axios.get('/api/getEmployee/'+shopid+"_"+employeeid, {
+               
+              }).then(function (response) {
+                
+                response.data.forEach((emp, index, array) => {
+                    document.getElementById("eemployeeid").value = emp.employeeid;
+                    document.getElementById("eemployeename").value = emp.employeename;
+                    document.getElementById("eemployeedesgn").value = emp.employeedesgn;
+                    document.getElementById("eemployeesalary").value = emp.employeesalary;
+                    document.getElementById("eemployeeaddress").value = emp.employeeaddress;
+                    document.getElementById("eemployeecontact").value = emp.employeecontact;
+                    document.getElementById("eemployeephoto").value = emp.employeephoto;
+                  });
+                }); 
+                
+            
+      $('#editemployeeModal').modal('show');
+    }
+
+    function editEmployee(){
+      var employeeid = document.getElementById("eemployeeid").value;
+      var employeename = document.getElementById("eemployeename").value;
+      var employeedesgn = document.getElementById("eemployeedesgn").value;
+      var employeesalary = document.getElementById("eemployeesalary").value;
+      var employeeaddress = document.getElementById("eemployeeaddress").value;
+      var employeecontact = document.getElementById("eemployeecontact").value;
+      var employeephoto = document.getElementById("eemployeephoto").value;
+      if(!isEmpty(employeeid) && !isEmpty(employeename) && !isEmpty(employeedesgn) && !isEmpty(employeesalary) && !isEmpty(employeeaddress) && !isEmpty(employeecontact)  && !isEmpty(employeephoto)){
+        
+        console.log("OK")
+        axios.get('/api/updateEmployee/'+shopid+"_"+employeeid, {
+                params: {
+                  employeeid,
+                  employeename,
+                  employeedesgn,
+                  employeesalary,
+                  employeeaddress,
+                  employeecontact,
+                  employeephoto,
+                  shopid
+                }
+          }).then(function (response) {
+              console.log(response)
+              if(response.status == 200){
+                $('#editemployeeModal').modal('hide');
+              }
+              refershEmployees();
+            }); 
+      }
+
+    }
+
+
+    function deleteEmployee(){
+      var employeeid = document.getElementById("eemployeeid").value;
+        axios.get('/api/removeEmployee/', {
+                params: {
+                  employeeid,
+                  shopid
+                }
+          }).then(function (response) {
+              console.log(response)
+              if(response.status == 200){
+                $('#editemployeeModal').modal('hide');
+              }
+              refershEmployees();
+            });   
+    }
+
+    function isEmpty(str) {
+      return (!str || str.length === 0 );
+    }
+  </script>
+</html>

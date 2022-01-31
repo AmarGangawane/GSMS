@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <%- include('../partials/heads.ejs'); %>
+ 
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+    <title>GSMS</title>
+    <style>
+      .image{
+          image-rendering: -moz-crisp-edges; /* Firefox */
+          image-rendering: -o-crisp-edges; /* Opera */
+          image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+          image-rendering: crisp-edges;
+          -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+        }
+    </style>
+  </head>
+	
+	<body>
+        <%- include('../partials/svgs.ejs'); %>
+        <div class="container-fluid">
+            <div class="row min-vh-100 flex-column flex-md-row">
+              <aside class="col-12 col-md-2 p-0 bg-dark flex-shrink-1">
+                <div class="d-flex flex-column flex-shrink-0 p-3" style="height: 100vh; background-color: #ffffff;">
+                  <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                    <svg class="bi me-2" width="25" height="25"><use xlink:href="#basket"></use></svg>
+                    <span class="fs-4" style="margin-top: 5px;">GSMS</span>
+                  </a>
+                  <hr style="margin-top: 7px;margin-bottom: 20px;">
+                  <ul class="nav nav-pills flex-column mb-auto  list-group" role="tablist">
+                    <li>
+                      <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/shop/');">
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                        Dashboard
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/bills/');" >
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                       Bills
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link active"   data-toggle="list" onclick="window.location.assign('/'+shopid+'/products/');" >
+                          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                          Products
+                        </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/employee/');" >
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                        Employees
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/supplier/');" >
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#supplier"></use></svg>
+                        Suppliers
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="nav-link " onclick="window.location.assign('/logout');" >
+                        <svg class="bi me-2" width="16" height="16"><use xlink:href="#log-out"></use></svg>
+                        Logout
+                      </a>
+                    </li>
+                  </ul>
+                  <hr>
+                </div>  
+              </aside>
+                <main  class="col bg-faded  flex-grow-1" style="padding:0px; width: 100%;" >
+  
+                    <div class="container">
+                      <div class="container" style="padding: 10px;">
+                        <div style="float:right;">  
+                          <div class="row" style="padding: 0%; margin-top: 15px;">
+                              <div class="col">
+                                <button type="button" class="btn btn-sm" onclick="refreshProducts()"> <svg class="bi " width="20" height="20"><use xlink:href="#refresh"></use></svg></button>
+                              </div>
+                          </div>
+                        </div>
+                        <h6 class="mt-3 mb-0" id="greet-msg"> </h6>
+                        <div style="color: #7F8B94;">Here what's happening with your store today.</div>
+                      </div>
+                      <div class="container" style="background-color: #ffffff;padding: 10px;">
+                        <button type="button" class="btn btn-primary btn-sm"  data-toggle="modal" data-target="#newproductModal" style="margin-top: 5px; margin-bottom: 10px; float: right;">Add New Product</button>
+                        <div id="productContainer"  >
+                          <div class="form-group pull-right" style="margin-right: 10px;">
+                            <input type="text" id="searchInput" class="search form-control form-control-sm" placeholder="What you looking for?" onkeyup="searchProduct()">
+                          </div>
+                          <br> <br>
+                          <table id="producttable" class="table table-responsive table-hover">
+                            <thead>
+                             
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col" >Name</th>
+                                <th scope="col">MRP</th>
+                                <th scope="col">Sell Price</th>
+                                <th scope="col">Discount</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Availability</th>
+                                <th scope="col">Edit</th>
+                              </tr>
+                            </thead>
+                            <tbody id="productdata">
+                             
+                            
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                </main> 
+            </div>
+        </div>
+
+       
+        <!-- Modal -->
+        <div class="modal fade" id="newproductModal" tabindex="-1" role="dialog" aria-labelledby="newproductModalTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="newproductModalLongTitle">Add New Product</h5>
+              </div>
+              <div class="modal-body" style="margin: 5px;">
+                  <form id="addnewproductForm">
+                            <div class="form-group">
+                              <label for="productname">Product Name</label>
+                              <input type="text" id="productname" name="productname" class="form-control">
+                          </div>
+                          <div class="row" >
+                              <div class="col">
+                                <div class="form-group">
+                                  <label for="productmrp">MRP</label>
+                                  <input type="text" id="productmrp" name="productmrp" class="form-control">
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="form-group">
+                                  <label for="productsp">Sell Price</label>
+                                  <input type="text" name="productsp" id="productsp" class="form-control" >
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="form-group">
+                                  <label for="productqty">Quantity</label>
+                                  <input type="text" name="productqty" id="productqty" class="form-control" >
+                                </div>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="productproducer">Producer</label>
+                            <input type="text" name="productproducer" id="productproducer" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <label for="producttype">Type</label>
+                            <input type="text" name="producttype" id="producttype" class="form-control" >
+                          </div>
+                          <div class="form-group">
+                            <label for="productimage">Image</label>
+                            <input type="text" name="productimage" id="productimage" value="" class="form-control" >
+                          </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="addNewProduct()">Add Product</button>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Product Modal -->  
+        <div class="modal fade" id="editproductModal" tabindex="-1" role="dialog" aria-labelledby="editproductModalTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editproductModalLongTitle">Edit Product</h5>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <!-- <div class="col">
+                      <img id="eproductphoto" src="/images/cubes.png" style="height: 300px; width: 300px;display: block;margin-left: auto;margin-right: auto;margin-top: 50px;">
+                  </div><div class="vl"></div> -->
+                  <div class="col">
+                      <form id="editproductForm">
+                          <div class="form-group">
+                            <label for="eproductid">Product ID</label>
+                            <input type="text" id="eproductid" name="eproductid" class="form-control" disabled>
+                        </div>
+                          <div class="form-group">
+                              <label for="eproductname">Product Name</label>
+                              <input type="text" id="eproductname" name="eproductname" class="form-control">
+                          </div>
+                          <div class="row">
+                              <div class="col">
+                                <div class="form-group">
+                                  <label for="eproductmrp">MRP</label>
+                                  <input type="text" id="eproductmrp" name="eproductmrp" class="form-control">
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="form-group">
+                                  <label for="eproductsp">Sell Price</label>
+                                  <input type="text" name="eproductsp" id="eproductsp" class="form-control" >
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="form-group">
+                                  <label for="eproductqty">Quantity</label>
+                                  <input type="text" name="eproductqty" id="eproductqty" class="form-control" >
+                                </div>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="eproductproducer">Producer</label>
+                            <input type="text" name="eproductproducer" id="eproductproducer" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <label for="eproducttype">Type</label>
+                            <input type="text" name="eproducttype" id="eproducttype" class="form-control" >
+                          </div>
+                          <div class="form-group">
+                            <label for="eproductimage">Image</label>
+                            <input type="text" name="eproductimage" id="eproductimage" value="" class="form-control" >
+                          </div>
+                  </div>
+                </div>
+                   
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeProduct()">Remove</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="editProduct()">Edit Product</button>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+	</body>
+  <script>
+    var username = capitalizeFirstLetter("<%= user.username %>");
+    var shopid ="<%= shopid %>";
+    console.log(shopid);
+    
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    var greet = [
+      'What are you doing that early?',
+      'Good Morning',
+      'Good Afternoon',
+      'Good Evening'
+    ][ parseInt(new Date().getHours() / 24 * 4) ];
+    console.log(greet)
+    document.getElementById("greet-msg").innerHTML = greet+", <b>"+username+"!</b>";
+
+    refreshProducts();
+
+    function addNewProduct(){
+      var productid = Date.now();
+      var productname = document.getElementById("productname").value;
+      var productmrp =  document.getElementById("productmrp").value;
+      var productsp = document.getElementById("productsp").value;
+      var productqty = document.getElementById("productqty").value;
+      var producttype = document.getElementById("producttype").value;
+      var productproducer =  document.getElementById("productproducer").value;
+      var productdiscount =  ((productmrp-productsp)/productmrp)*100;
+      var productimage =  document.getElementById("productimage").value;
+      var _id = productid;
+      if(!isEmpty(productname) && !isEmpty(productmrp) && !isEmpty(productsp) && !isEmpty(productqty) && !isEmpty(productproducer)  && !isEmpty(productdiscount)  && !isEmpty(productimage) && !isEmpty(producttype)){
+            console.log("OK")
+        axios.get('/api/addNewProduct', {
+                params: {
+                  _id,
+                  productid,
+                  productname,
+                  productmrp,
+                  productsp,
+                  productqty,
+                  producttype,
+                  productproducer,
+                  productdiscount,
+                  productimage,
+                  shopid
+                }
+          }).then(function (response) {
+              console.log(response)
+              if(response.status == 200){
+                $('#newproductModal').modal('hide');
+              }
+              refreshProducts();
+            });   
+      }
+    
+    }
+    
+   
+    function refreshProducts(){
+       document.getElementById("productdata").innerHTML="";
+      axios.get('/api/getProducts/'+shopid, {
+               
+              }).then(function (response) {
+                
+                response.data.forEach((product, index, array) => {
+                    if(product.productqty !=0){
+                      var data = "<tr><th scope='row'><img class='image' src="+product.productimage+" style='height:40px; width:40px'></th><td>"+product.productname+"</td><td>₹"+product.productmrp+"</td><td>₹"+product.productsp+"</td><td>"+parseFloat(product.productdiscount).toFixed(2)+"%</td><td>"+product.productqty+"</td><td style='color: green;'>Available</td><td><button type='button' class='btn btn-sucess btn-sm' onclick='displayProduct("+product.productid+")'><svg class='bi me-2' width='16' height='16'><use xlink:href='#edit'></use></svg></button></td></tr>";
+                    }else{                                                                                                                                                  
+                      var data = "<tr><th scope='row'><img class='image' src="+product.productimage+" style='height:40px; width:40px'></th><td>"+product.productname+"</td><td>₹"+product.productmrp+"</td><td>₹"+product.productsp+"</td><td>"+parseFloat(product.productdiscount).toFixed(2)+"%</td><td>"+product.productqty+"</td><td style='color: red;'>Out of Stock</td><td><button type='button' class='btn btn-sucess btn-sm' onclick='displayProduct("+product.productid+")'><svg class='bi me-2' width='16' height='16'><use xlink:href='#edit'></use></svg></button></td></tr>";
+                    }
+                    document.getElementById("productdata").innerHTML += data;
+                  });
+                }); 
+      }
+       
+    function isEmpty(str) {
+      return (!str || str.length === 0 );
+    }
+
+    function displayProduct(productid){
+     
+      
+      axios.get('/api/getProduct/'+shopid+"_"+productid, {
+               
+              }).then(function (response) {
+                
+                response.data.forEach((product, index, array) => {
+                  console.log(product.productname)
+                  document.getElementById("eproductid").value = product.productid;
+                  document.getElementById("eproductname").value = product.productname;
+                  document.getElementById("eproductmrp").value = product.productmrp;
+                  document.getElementById("eproductsp").value = product.productsp;
+                  document.getElementById("eproductqty").value = product.productqty;
+                  document.getElementById("eproducttype").value = product.producttype;
+                  document.getElementById("eproductproducer").value = product.productproducer;
+                  document.getElementById("eproductimage").value = product.productimage;
+                  document.getElementById("eproductphoto").src = product.productimage;
+                  });
+                }); 
+                
+                $('#editproductModal').modal('show');
+    }
+
+    function editProduct(){
+      var productid = document.getElementById("eproductid").value;
+      var productname = document.getElementById("eproductname").value;
+      var productmrp =  document.getElementById("eproductmrp").value;
+      var productsp = document.getElementById("eproductsp").value;
+      var productqty = document.getElementById("eproductqty").value;
+      var producttype = document.getElementById("eproducttype").value;
+      var productproducer =  document.getElementById("eproductproducer").value;
+      var productdiscount =  ((productmrp-productsp)/productmrp)*100;
+      var productimage =  document.getElementById("eproductimage").value;
+      var _id = productid;
+
+      if(!isEmpty(productname) && !isEmpty(productmrp) && !isEmpty(productsp) && !isEmpty(productqty) && !isEmpty(producttype) && !isEmpty(productproducer)  && !isEmpty(productdiscount)  && !isEmpty(productimage)){
+            console.log("OK")
+        axios.get('/api/updateProduct/'+productid, {
+                params: {
+                  _id,
+                  productid,
+                  productname,
+                  productmrp,
+                  productsp,
+                  productqty,
+                  producttype,
+                  productproducer,
+                  productdiscount,
+                  productimage,
+                  shopid
+                }
+          }).then(function (response) {
+              console.log(response)
+              if(response.status == 200){
+                $('#editproductModal').modal('hide');
+              }
+              refreshProducts();
+            });   
+      }
+    }
+
+    function removeProduct(){
+      var productid = document.getElementById("eproductid").value;
+
+            console.log("OK")
+        axios.get('/api/removeProduct/', {
+                params: {
+                  productid,
+                  shopid
+                }
+          }).then(function (response) {
+              console.log(response)
+              if(response.status == 200){
+                $('#editproductModal').modal('hide');
+              }
+              refreshProducts();
+            });   
+    
+    }
+
+
+    function searchProduct() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("searchInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("producttable");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+  </script>
+</html>

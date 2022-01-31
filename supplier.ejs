@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <%- include('../partials/heads.ejs'); %>
+ 
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+    <title>GSMS</title>
+  
+  </head>
+	
+	<body>
+        <%- include('../partials/svgs.ejs'); %>
+        <div class="container-fluid">
+            <div class="row min-vh-100 flex-column flex-md-row">
+                <aside class="col-12 col-md-2 p-0 bg-dark flex-shrink-1">
+                    <div class="d-flex flex-column flex-shrink-0 p-3" style="height: 100vh; background-color: #ffffff;">
+                      <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                        <svg class="bi me-2" width="25" height="25"><use xlink:href="#basket"></use></svg>
+                        <span class="fs-4" style="margin-top: 5px;">GSMS</span>
+                      </a>
+                      <hr style="margin-top: 7px;margin-bottom: 20px;">
+                      <ul class="nav nav-pills flex-column mb-auto  list-group" role="tablist">
+                        <li>
+                          <a href="#" class="nav-link" data-toggle="list" onclick="window.location.assign('/'+shopid+'/shop/');">
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                            Dashboard
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/bills/');" >
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                            Bills
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="nav-link"   data-toggle="list" onclick="window.location.assign('/'+shopid+'/products/');" >
+                              <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                              Products
+                            </a>
+                        </li>
+                        <li>
+                          <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/employee/');" >
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                            Employees
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="nav-link active" data-toggle="list" onclick="window.location.assign('/'+shopid+'/supplier/');" >
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#supplier"></use></svg>
+                            Suppliers
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="nav-link " onclick="window.location.assign('/logout');" >
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#log-out"></use></svg>
+                            Logout
+                          </a>
+                        </li>
+                      </ul>
+                      <hr>
+                    </div>  
+                  </aside>
+                <main  class="col bg-faded  flex-grow-1" style="padding:0px; width: 100%;" >
+  
+                    <div class="container">
+                      <div class="container" style="padding: 10px;">
+                        <div style="float:right;">  
+                          <div class="row" style="padding: 0%; margin-top: 15px;">
+                              <div class="col">
+                                <button type="button" class="btn btn-sm" onclick="refreshSupplier()"> <svg class="bi " width="20" height="20"><use xlink:href="#refresh"></use></svg></button>
+                              </div>
+                          </div>
+                        </div>
+                        <h6 class="mt-3 mb-0" id="greet-msg"> </h6>
+                        <div style="color: #7F8B94;">Here what's happening with your store today.</div>
+                      </div>
+
+                      <div class="container" style="background-color: #ffffff;padding: 10px;">
+                        <button type="button" class="btn btn-primary btn-sm"  data-toggle="modal" data-target="#newsupplierModal" style="margin-top: 5px; margin-bottom: 10px; float: right;">Add New Supplier</button>
+                        <div id="supplierContainer" >
+                         
+                          <br> <br>
+                          <div class="container">
+                            <div id="supplierData" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5" style="background-color: #ffffff; padding: 10px;margin-top: 10px;">
+                          </div>
+                        </div>
+                       
+                      </div>
+                    </div>
+                </main> 
+            </div>
+        </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="newsupplierModal" tabindex="-1" role="dialog" aria-labelledby="newsupplierModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="newsupplierModalLongTitle">Add New Supplier</h5>
+            </div>
+            <div class="modal-body" style="margin: 5px;">
+              <form id="addnewsupplierForm">
+                        <div class="form-group">
+                            <label for="sname">Name</label>
+                            <input type="text" id="sname" name="sname" class="form-control">
+                        </div>
+                        <div class="form-group">
+                          <label for="saddress">Address</label>
+                          <input type="text" name="saddress" id="saddress" class="form-control">
+                        </div>
+                        <div class="form-group">
+                          <label for="scontact">Contact</label>
+                          <input type="number" name="scontact" id="scontact" class="form-control" >
+                        </div>
+                        <div class="form-group">
+                          <label for="sphoto">Photo URL</label>
+                          <input type="text" name="sphoto" id="sphoto"  class="form-control" >
+                        </div>
+                      </form>
+                      <br>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="addNewSupplier()">Add Supplier</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div> 
+      
+
+       <!--Edit Modal -->
+       <div class="modal fade" id="editsupplierModal" tabindex="-1" role="dialog" aria-labelledby="editsupplierModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editsupplierModalLongTitle">Edit Supplier</h5>
+            </div>
+            <div class="modal-body" style="margin: 5px;">
+              <form id="editsupplierForm">
+                          <div class="form-group">
+                            <label for="esupplierid">Supplier ID</label>
+                            <input type="text" id="esupplierid" name="esupplierid" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="esuppliername">Supplier Name</label>
+                            <input type="text" id="esuppliername" name="esuppliername" class="form-control">
+                        </div>
+                        <div class="form-group">
+                          <label for="esupplieraddress">Address</label>
+                          <input type="text" name="esupplieraddress" id="esupplieraddress" class="form-control">
+                        </div>
+                        <div class="form-group">
+                          <label for="esuppliercontact">Contact</label>
+                          <input type="number" name="esuppliercontact" id="esuppliercontact" class="form-control" >
+                        </div>
+                        <div class="form-group">
+                          <label for="esupplierphoto">Photo URL</label>
+                          <input type="text" name="esupplierphoto" id="esupplierphoto"  class="form-control" >
+                        </div>
+                      </form>
+                      <br>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="deletesupplier()">Remove</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="editsupplier()">Edit supplier</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div> 
+	</body>
+  <script>
+    var username = capitalizeFirstLetter("<%= user.username %>");
+    var shopid ="<%= shopid %>";
+    console.log(shopid);
+    
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    var greet = [
+      'What are you doing that early?',
+      'Good Morning',
+      'Good Afternoon',
+      'Good Evening'
+    ][ parseInt(new Date().getHours() / 24 * 4) ];
+    console.log(greet)
+    document.getElementById("greet-msg").innerHTML = greet+", <b>"+username+"!</b>";
+
+    refershsuppliers();
+
+    function addNewSupplier(){
+      var supplierid = Date.now();
+      var suppliername = document.getElementById("sname").value;
+      var supplieraddress = document.getElementById("saddress").value;
+      var suppliercontact = document.getElementById("scontact").value;
+      var supplierphoto = document.getElementById("sphoto").value;
+
+      if(!isEmpty(supplierid)){
+       
+        var  params={
+                  supplierid,
+                  suppliername,
+                  supplieraddress,
+                  suppliercontact,
+                  supplierphoto,
+                  shopid
+                };
+                console.log(params)
+        axios.get('/api/addNewsupplier/', {
+                params: {
+                  supplierid,
+                  suppliername,
+                  supplieraddress,
+                  suppliercontact,
+                  supplierphoto,
+                  shopid
+                }
+          }).then(function (response) {
+              console.log(response)
+              if(response.status == 200){
+                $('#newsupplierModal').modal('hide');
+              }
+              refershsuppliers();
+            }); 
+
+
+      }
+    }
+
+    function refershsuppliers(){
+      document.getElementById("supplierData").innerHTML=" ";
+      axios.get('/api/getsuppliers/'+shopid, {
+               
+              }).then(function (response) {
+                
+                response.data.forEach((s, index, array) => {
+                  
+                     var data = "<div class='col mb-4' ><div class='card' id="+s.supplierid+" style='width: 200px;height: 270px;'><div id='container' style='position:relative;'><center><img src="+s.supplierphoto+" style='width: 180px; height: 180px; background-color: #7F8B94;'></center><svg class='bi me-2' width='16' height='16' style='position: absolute; top: 5px; right:0px;' onclick='displayUser("+s.supplierid+")'><use xlink:href='#edituser'></use></svg></div><p id='suppliername' style='align-self: center; margin: 10px 0px 0px 0px; font-size: 18px;'>"+s.suppliername+"</p><center><p id='supplieraddress' style='align-self: center; margin: 0px; font-size: 12px;'>"+s.supplieraddress+"</p></center><center><p id='suppliercontact' style='align-self: center; margin: 0px; font-size: 12px;'>(+91) "+s.suppliercontact+"</p></center></div></div>";
+                    document.getElementById("supplierData").innerHTML += data;
+                  });
+                }); 
+      }
+
+    function displayUser(supplierid){
+      axios.get('/api/getsupplier/'+shopid+"_"+supplierid, {
+               
+              }).then(function (response) {
+                
+                response.data.forEach((s, index, array) => {
+                    document.getElementById("esupplierid").value = s.supplierid;
+                    document.getElementById("esuppliername").value = s.suppliername;
+                    document.getElementById("esupplieraddress").value = s.supplieraddress;
+                    document.getElementById("esuppliercontact").value = s.suppliercontact;
+                    document.getElementById("esupplierphoto").value = s.supplierphoto;
+                  });
+                }); 
+                
+            
+      $('#editsupplierModal').modal('show');
+    }
+
+    function editsupplier(){
+      var supplierid = document.getElementById("esupplierid").value;
+      var suppliername = document.getElementById("esuppliername").value;
+      var supplieraddress = document.getElementById("esupplieraddress").value;
+      var suppliercontact = document.getElementById("esuppliercontact").value;
+      var supplierphoto = document.getElementById("esupplierphoto").value;
+      if(!isEmpty(supplierid) && !isEmpty(suppliername) && !isEmpty(supplieraddress) && !isEmpty(suppliercontact)  && !isEmpty(supplierphoto)){
+        
+        console.log("OK")
+        axios.get('/api/updatesupplier/'+shopid+"_"+supplierid, {
+                params: {
+                  supplierid,
+                  suppliername,
+                  supplieraddress,
+                  suppliercontact,
+                  supplierphoto,
+                  shopid
+                }
+          }).then(function (response) {
+              console.log(response)
+              if(response.status == 200){
+                $('#editsupplierModal').modal('hide');
+              }
+              refershsuppliers();
+            }); 
+      }
+
+    }
+
+
+    function deletesupplier(){
+      var supplierid = document.getElementById("esupplierid").value;
+        axios.get('/api/removesupplier/', {
+                params: {
+                  supplierid,
+                  shopid
+                }
+          }).then(function (response) {
+              console.log(response)
+              if(response.status == 200){
+                $('#editsupplierModal').modal('hide');
+              }
+              refershsuppliers();
+            });   
+    }
+
+    function isEmpty(str) {
+      return (!str || str.length === 0 );
+    }
+  </script>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <%- include('../partials/heads.ejs'); %>
+ 
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <title>GSMS</title>
+  
+  </head>
+	
+	<body>
+        <%- include('../partials/svgs.ejs'); %>
+        <div class="container-fluid">
+            <div class="row min-vh-100 flex-column flex-md-row">
+              <aside class="col-12 col-md-2 p-0 bg-dark flex-shrink-1">
+                  <div class="d-flex flex-column flex-shrink-0 p-3" style="height: 100vh; background-color: #ffffff;">
+                    <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                      <svg class="bi me-2" width="25" height="25"><use xlink:href="#basket"></use></svg>
+                      <span class="fs-4" style="margin-top: 5px;">GSMS</span>
+                    </a>
+                    <hr style="margin-top: 7px;margin-bottom: 20px;">
+                    <ul class="nav nav-pills flex-column mb-auto  list-group" role="tablist">
+                      <li>
+                        <a href="#" class="nav-link active" data-toggle="list" onclick="window.location.assign('/'+shopid+'/shop/');">
+                          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                          Dashboard
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/bills/');" >
+                          <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                         Bills
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="nav-link"   data-toggle="list" onclick="window.location.assign('/'+shopid+'/products/');" >
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                            Products
+                          </a>
+                      </li>
+                      <li>
+                        <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/employee/');" >
+                          <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                          Employees
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="nav-link " data-toggle="list" onclick="window.location.assign('/'+shopid+'/supplier/');" >
+                          <svg class="bi me-2" width="16" height="16"><use xlink:href="#supplier"></use></svg>
+                          Suppliers
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="nav-link " onclick="window.location.assign('/logout');" >
+                          <svg class="bi me-2" width="16" height="16"><use xlink:href="#log-out"></use></svg>
+                          Logout
+                        </a>
+                      </li>
+                    </ul>
+                    <hr>
+                  </div>  
+                </aside>
+                <main  class="col bg-faded  flex-grow-1" style="padding:0px; width: 100%;" >
+  
+                    <div class="container">
+                      <div class="container" style="padding: 10px;">
+                        <div style="float:right;">  
+                          <div class="row" style="padding: 0%; margin-top: 15px;">
+                              <div class="col">
+                                <button type="button" class="btn btn-sm" > <svg class="bi " width="20" height="20"><use xlink:href="#refresh"></use></svg></button>
+                              </div>
+                          </div>
+                        </div>
+                        <h6 class="mt-3 mb-0" id="greet-msg"> </h6>
+                        <div style="color: #7F8B94;">Here what's happening with your store today.</div>
+                      </div>
+
+                      <div class="container" style="background-color: #ffffff;padding: 10px;">
+                        <div style="width: 300px;height: 300px;">
+                          <canvas id="producttypeChart"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                   
+                </main> 
+            </div>
+        </div>
+
+       
+      
+	</body>
+  <script>
+    var username = capitalizeFirstLetter("<%= user.username %>");
+    var shopid ="<%= shopid %>";
+    console.log(shopid);
+    
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    var greet = [
+      'What are you doing that early?',
+      'Good Morning',
+      'Good Afternoon',
+      'Good Evening'
+    ][ parseInt(new Date().getHours() / 24 * 4) ];
+    console.log(greet)
+    document.getElementById("greet-msg").innerHTML = greet+", <b>"+username+"!</b>";
+   
+    productTypesChart();
+   
+    function productTypesChart(){
+      var labels =[];
+      var counts = [];
+      axios.get('/api/getProductTypeCounts/'+shopid, {
+               
+              }).then(function (response) {
+                response.data.forEach((res, index, array) => {
+                     if(res !=""){
+                           labels.push(res._id);
+                           counts.push(res.count);
+                     }else{                                                                                                                                                  
+                    
+                     }
+                    
+                  });
+                  const data = {
+                      labels: labels,
+                      datasets: [{
+              
+                        data: counts,
+                        backgroundColor: [
+                          'rgb(255, 99, 132)',
+                          'rgb(54, 162, 235)',
+                          'rgb(255, 205, 86)'
+                        ]
+                      }]
+                    };
+
+
+                  const config = {
+                    type: 'doughnut',
+                    data: data,
+                    options: {
+                      responsive: true,
+                      plugins: {
+                        legend: {
+                          position: 'bottom'
+                        },
+                        title: {
+                          display: true,
+                          text: 'Product Proportion'
+                        }
+                      }
+                    },
+                  };
+
+                  const myChart = new Chart(
+                    document.getElementById('producttypeChart'),
+                    config
+                  );
+                }); 
+    }
+  </script>
+</html>

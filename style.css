@@ -1,0 +1,26 @@
+body{
+  font-family: 'Work Sans', sans-serif;
+    /* font-family: 'Roboto', sans-serif; */
+    background-color: #F4F6F8;
+    
+  }
+
+  a:link, a:visited,  a:hover, a:active
+  {
+      color: #000000;
+      text-decoration: none;
+  }
+
+  .form-group{
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .vl {
+    border-left: 1px solid #DEE2E6;
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    margin-left: -3px;
+    top: 0;
+  }
